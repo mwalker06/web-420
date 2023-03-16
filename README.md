@@ -1,2 +1,4 @@
-# web-420
-Repo for RESTful API’s
+# WEB 420 RESTful APIs
+## Contributors
+* Professor Richard Krasso
+* Megan Walker
