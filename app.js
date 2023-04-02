@@ -1,3 +1,9 @@
+// Title: app.js
+// Author: Megan Walker
+// Date: 4/01/2023
+// Description: This is the main file for the WEB 420 RESTful APIs assignment.
+// References: WEB 420 RESTful APIs GitHub repository & WEB 420 RESTful APIs assignment instructions
+
 const express = require("express");
 const http = require("http");
 const swaggerUi = require("swagger-ui-express");
@@ -33,7 +39,6 @@ const openapiSpecification = swaggerJsdoc(options);
 
 // Serve the Swagger/OpenAPI specification at /api-docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
-
 // Create a new server that listens on the port set in the port variable
 http.createServer(app).listen(port, () => {
   console.log(`Application started and listening on port ${port}.`);

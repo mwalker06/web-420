@@ -1,0 +1,109 @@
+# Title: Walker Composers API
+# Author: Megan Walker
+# Date: 04/02/2023
+# Description: API for searching, and creating composers by name and ID. Composer Swagger API doc
+# Reference: https://swagger.io/docs/specification/basic-structure/, WEB 420 Assignment, WEB 420 GitHub Repository
+
+openapi: 3.0.0
+info:
+  title: Composer API
+  description: Composer API for searching, and creating composers by name and ID.
+  version: "1.0"
+paths:
+  /composers:
+    description: The list of composers
+    get:
+      summary: Returns a list of composers
+      tags:
+        - composers
+      operationId: findAllComposers
+      responses:
+        "200":
+          description: A list of composers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                    composer:
+                      type: object
+                      properties:
+                        firstName:
+                          type: string
+                        lastName:
+                          type: string
+        "500":
+          description: Server Exception
+        "501":
+          description: MongoDB Exception
+    post:
+      summary: Creates a new composer
+      tags:
+        - composers
+      operationId: createComposer
+      requestBody:
+        description: Creates new composer object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+      responses:
+        "200":
+          description: New composer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+        "500":
+          description: Server Exception
+        "501":
+          description: MongoDB Exception
+  /composers/{id}:
+    description: The list of composers
+    get:
+      summary: Returns a single composer by ID
+      tags:
+        - composers
+      operationId: findComposerById
+      parameters:
+        - name: id
+          in: path
+          description: ID of composer to return
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A single composer by ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  composer:
+                    type: object
+                    properties:
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+        "500":
+          description: Server Exception
+        "501":
+          description: MongoDB Exception
