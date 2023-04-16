@@ -12,6 +12,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const mongoose = require("mongoose");
 const composersAPI = require('./routes/walker-composer-routes');
+const PersonAPI = require('./routes/walker-person-routes');
 
 // Create a new express app
 const app = express();
@@ -57,6 +58,7 @@ const options = {
 const openapiSpecification = swaggerJsdoc(options);
 
 app.use('/api', composersAPI);
+app.use('/api', PersonAPI);
 
 // Serve the Swagger/OpenAPI specification at /api-docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
