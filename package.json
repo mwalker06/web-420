@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/mwalker06/web-420#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "bluebird": "^3.7.2",
     "express": "^4.17.1",
     "mongoose": "^5.12.3",
