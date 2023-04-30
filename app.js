@@ -12,8 +12,9 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const mongoose = require("mongoose");
 const composersAPI = require('./routes/walker-composer-routes');
-const PersonAPI = require('./routes/walker-person-routes');
-const UserAPI = require('./routes/walker-session-routes');
+const personAPI = require('./routes/walker-person-routes');
+const userAPI = require('./routes/walker-session-routes');
+const nodeShopperAPI = require('./routes/walker-node-shopper-routes');
 
 // Create a new express app
 const app = express();
@@ -59,11 +60,13 @@ const options = {
 const openapiSpecification = swaggerJsdoc(options);
 
 app.use('/api', composersAPI);
-app.use('/api', PersonAPI);
-app.use('/api', UserAPI);
+app.use('/api', personAPI);
+app.use('/api', userAPI);
+app.use('/api', nodeShopperAPI);
 
 // Serve the Swagger/OpenAPI specification at /api-docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
 // Create a new server that listens on the port set in the port variable
 http.createServer(app).listen(port, () => {
   console.log(`Application started and listening on port ${port}.`);

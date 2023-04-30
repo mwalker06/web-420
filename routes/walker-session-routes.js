@@ -6,9 +6,16 @@
  * References: WEB 420 RESTful APIs GitHub repository & WEB 420 RESTful APIs assignment instructions
  */
 
+// Require statements
 const express = require("express");
+
+// Require the express router
 const router = express.Router();
+
+// Require the walker-user model
 const User = require("../models/walker-user");
+
+// Require bcrypt
 const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
