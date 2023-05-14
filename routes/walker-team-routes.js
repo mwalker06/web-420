@@ -30,24 +30,23 @@ const Team = require("../models/walker-team");
  *       description: MongoDB Exception
  *  */
 router.get("/teams", async (req, res) => {
-    try {
-        Team.find({}, function (err, teams) {
-        if (err) {
-            console.log(err);
-            res.status(501).send({
-                message: "MongoDB Exception",
-            });
-        } else {
-            res.json(teams);
-        }
+  try {
+    Team.find({}, function (err, teams) {
+      if (err) {
+        console.log(err);
+        res.status(501).send({
+          message: "MongoDB Exception",
         });
-    } catch (err) {
-        res.status(500).send({
-            message: "Server Exception",
-        });
-    }
-    }
-);
+      } else {
+        res.json(teams);
+      }
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: "Server Exception",
+    });
+  }
+});
 
 // add team
 /**
@@ -55,7 +54,7 @@ router.get("/teams", async (req, res) => {
  * /api/teams:
  *   post:
  *     tags:
- *     - teams
+ *       - teams
  *     description: API for adding a new team document
  *     summary: Creates a new team document
  *     requestBody:
@@ -64,43 +63,44 @@ router.get("/teams", async (req, res) => {
  *         application/json:
  *           schema:
  *             required:
- *              - name
- *              - mascot
+ *               - name
+ *               - mascot
  *             properties:
  *               name:
  *                 type: string
  *               mascot:
  *                 type: string
- *       responses:
- *         '200':
- *           description: Team document
- *         '500':
- *           description: Server Exception
- *         '501':
- *           description: MongoDB Exception
-*/
+ *     responses:
+ *       '200':
+ *         description: Team document
+ *       '500':
+ *         description: Server Exception
+ *       '501':
+ *         description: MongoDB Exception
+ */
+
 router.post("/teams", async (req, res) => {
-    try {
-        const newTeam = {
-            name: req.body.name,
-            mascot: req.body.mascot
-        };
-        await Team.create(newTeam, function (err, team) {
-            if (err) {
-                console.log(err);
-                res.status(501).send({
-                    message: "MongoDB Exception",
-                });
-            } else {
-                console.log(team);
-                res.json(team);
-            }
+  try {
+    const newTeam = {
+      name: req.body.name,
+      mascot: req.body.mascot,
+    };
+    await Team.create(newTeam, function (err, team) {
+      if (err) {
+        console.log(err);
+        res.status(501).send({
+          message: "MongoDB Exception",
         });
-    } catch (err) {
-        res.status(500).send({
-            message: "Server Exception",
-        });
-    }
+      } else {
+        console.log(team);
+        res.json(team);
+      }
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: "Server Exception",
+    });
+  }
 });
 
 // assignPlayerToTeam
@@ -109,24 +109,24 @@ router.post("/teams", async (req, res) => {
  * /api/teams/{id}/players:
  *   post:
  *     tags:
- *     - teams
+ *       - teams
  *     description: API for adding a new player document
  *     summary: Creates a new team document
  *     parameters:
- *      - name: id
- *        in: path
- *        description: Team ID
- *        required: true
- *        type: string
+ *       - name: id
+ *         in: path
+ *         description: Team ID
+ *         required: true
+ *         type: string
  *     requestBody:
  *       description: Player information
  *       content:
  *         application/json:
  *           schema:
  *             required:
- *              - firstName
- *              - lastName
- *              - salary
+ *               - firstName
+ *               - lastName
+ *               - salary
  *             properties:
  *               firstName:
  *                 type: string
@@ -137,61 +137,110 @@ router.post("/teams", async (req, res) => {
  *     responses:
  *       '200':
  *         description: Team document
- *      '401':
+ *       '401':
  *         description: Invalid Team ID
  *       '500':
  *         description: Server Exception
  *       '501':
  *         description: MongoDB Exception
-*/
+ */
+
 router.post("/teams/:id/players", async (req, res) => {
-    try {
-        const { id } = req.params;
-        console.log(id);
-        Team.findOne({ _id: req.params.id }, function (err, team) {
+  try {
+    Team.findOne({ _id: req.params.id }, function (err, team) {
+      if (err) {
+        console.log(err);
+        res.status(501).send({
+          message: "MongoDB Exception",
+        });
+      } else {
+        // if team is null, return 401
+        if (team === null) {
+          console.log("Invalid team ID");
+          res.status(401).send({
+            message: "Invalid team ID",
+          });
+        } else {
+          //console.log(team);
+          const newPlayer = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            salary: req.body.salary,
+          };
+          team.players.push(newPlayer);
+          team.save(function (err, updatedTeam) {
             if (err) {
-                console.log(err);
-                res.status(501).send({
-                    message: "MongoDB Exception",
-                });
+              console.log(err);
+              res.status(501).send({
+                message: "MongoDB Exception",
+              });
             } else {
-                // if team is null, return 401
-                if (team === null) {
-                    console.log("Invalid team ID");
-                    res.status(401).send({
-                        message: "Invalid team ID",
-                    });
-                }else{
-                    //console.log(team);
-                    const newPlayer = {
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        salary: req.body.salary
-                    };
-                    team.players.push(newPlayer);
-                    team.save(function (err, updatedTeam) {
-                        if (err) {
-                            console.log(err);
-                            res.status(501).send({
-                                message: "MongoDB Exception",
-                            });
-                        } else {
-                            //console.log(updatedTeam);
-                            // get new player and return
-                            const player = updatedTeam.players[updatedTeam.players.length - 1];
-                            res.json(player);
-                        }
-                    });
-                }
+              //console.log(updatedTeam);
+              // get new player and return
+              const player =
+                updatedTeam.players[updatedTeam.players.length - 1];
+              res.json(player);
             }
-        });
-    } catch (err) {
-        res.status(500).send({
-            message: "Server Exception",
-        });
-    }
+          });
+        }
+      }
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: "Server Exception",
+    });
+  }
 });
 
-
+// findAllPlayersByTeamId
+/**
+ * @openapi
+ * /api/teams/{id}/players:
+ *   get:
+ *     tags:
+ *       - teams
+ *     description: API for returning all team players
+ *     summary: Returns all team players in the database
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Team ID
+ *         required: true
+ *         type: string
+ *     responses:
+ *       '200':
+ *         description: Array of team documents
+ *       '500':
+ *         description: Server Exception
+ *       '501':
+ *         description: MongoDB Exception
+ */
+router.get("/teams/:id/players", async (req, res) => {
+  try {
+    Team.findOne({ _id: req.params.id }, function (err, team) {
+      if (err) {
+        console.log(err);
+        res.status(501).send({
+          message: "MongoDB Exception",
+        });
+      } else {
+        // if team is null, return 401
+        if (team === null) {
+          console.log("Invalid team ID");
+          res.status(401).send({
+            message: "Invalid team ID",
+          });
+        } else {
+          //console.log(team);
+          res.json(team.players);
+        }
+      }
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: "Server Exception",
+    });
+  }
+});
 
 module.exports = router;
