@@ -15,6 +15,7 @@ const composersAPI = require('./routes/walker-composer-routes');
 const personAPI = require('./routes/walker-person-routes');
 const userAPI = require('./routes/walker-session-routes');
 const nodeShopperAPI = require('./routes/walker-node-shopper-routes');
+const teamsAPI = require('./routes/walker-team-routes');
 
 // Create a new express app
 const app = express();
@@ -63,6 +64,7 @@ app.use('/api', composersAPI);
 app.use('/api', personAPI);
 app.use('/api', userAPI);
 app.use('/api', nodeShopperAPI);
+app.use('/api', teamsAPI);
 
 // Serve the Swagger/OpenAPI specification at /api-docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
