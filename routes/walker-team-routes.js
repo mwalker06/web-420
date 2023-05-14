@@ -49,4 +49,58 @@ router.get("/teams", async (req, res) => {
     }
 );
 
+// add team
+/**
+ * @openapi
+ * /api/teams:
+ *   post:
+ *     tags:
+ *     - teams
+ *     description: API for adding a new team document
+ *     summary: Creates a new team document
+ *     requestBody:
+ *       description: Team information
+ *       content:
+ *         application/json:
+ *           schema:
+ *             required:
+ *              - name
+ *              - mascot
+ *             properties:
+ *               name:
+ *                 type: string
+ *               mascot:
+ *                 type: string
+ *       responses:
+ *         '200':
+ *           description: Team document
+ *         '500':
+ *           description: Server Exception
+ *         '501':
+ *           description: MongoDB Exception
+*/
+router.post("/teams", async (req, res) => {
+    try {
+        const newTeam = {
+            name: req.body.name,
+            mascot: req.body.mascot
+        };
+        await Team.create(newTeam, function (err, team) {
+            if (err) {
+                console.log(err);
+                res.status(501).send({
+                    message: "MongoDB Exception",
+                });
+            } else {
+                console.log(team);
+                res.json(team);
+            }
+        });
+    } catch (err) {
+        res.status(500).send({
+            message: "Server Exception",
+        });
+    }
+});
+
 module.exports = router;
